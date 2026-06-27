@@ -237,10 +237,10 @@ ok "Partitions ready."
 banner "Creating 16 GB Swapfile"
 
 # fallocate is orders of magnitude faster than dd for this purpose
-fallocate -l "$SWAP_SIZE" /mnt/swapfile
-chmod 0600 /mnt/swapfile
-mkswap /mnt/swapfile
-swapon /mnt/swapfile
+#---fallocate -l "$SWAP_SIZE" /mnt/swapfile
+#---chmod 0600 /mnt/swapfile
+#---mkswap /mnt/swapfile
+#---swapon /mnt/swapfile
 ok "16 GB swapfile active."
 
 # =============================================================================
