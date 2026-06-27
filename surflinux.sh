@@ -201,13 +201,13 @@ read -rp "$(echo -e "${RED}${BOLD}To confirm, type the full device name '${DISK}
 [[ "$CONFIRM" == "$DISK" ]] || die "Device name did not match. Aborted."
 
 # Wipe & partition — GPT, 1 GB EFI, rest root
-info "Wiping and partitioning ${DISK}..."
-wipefs -af "$DISK"
-sgdisk -Z "$DISK"
-sgdisk \
-    -n 1:0:+1G   -t 1:ef00 -c 1:"EFI System Partition" \
-    -n 2:0:0     -t 2:8300 -c 2:"Arch Linux Root"      \
-    "$DISK"
+#---info "Wiping and partitioning ${DISK}..."
+#---wipefs -af "$DISK"
+#---sgdisk -Z "$DISK"
+#---sgdisk \
+#---    -n 1:0:+1G   -t 1:ef00 -c 1:"EFI System Partition" \
+#---    -n 2:0:0     -t 2:8300 -c 2:"Arch Linux Root"      \
+#---    "$DISK"
 
 # Partition suffix detection — handles nvme (p1/p2), mmcblk (p1/p2),
 # and standard sata/usb (1/2). Any device name ending in a digit needs 'p'.
@@ -220,8 +220,8 @@ else
 fi
 
 info "Formatting partitions..."
-mkfs.fat  -F32 -n EFI  "$PART_EFI"
-mkfs.ext4 -L   ROOT    "$PART_ROOT"
+#---mkfs.fat  -F32 -n EFI  "$PART_EFI"
+#---mkfs.ext4 -L   ROOT    "$PART_ROOT"
 
 info "Mounting partitions..."
 mount "$PART_ROOT" /mnt
@@ -251,7 +251,7 @@ banner "Installing Base System (pacstrap)"
 
 # Sync mirrors and optimise for speed
 info "Updating mirrorlist..."
-reflector --country US --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --country DE --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 # Enable multilib for Steam/gaming lib32 packages right now so pacstrap can see it
 sed -i '/^#\[multilib\]/,/^#Include/{s/^#//}' /etc/pacman.conf
