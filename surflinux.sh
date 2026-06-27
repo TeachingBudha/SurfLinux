@@ -76,13 +76,13 @@ USER_PASS="CHANGEME_NOW"           # ← change this
 ROOT_PASS="CHANGEME_NOW"           # ← change this
 
 LOCALE="en_US.UTF-8"
-KEYMAP="us"
-TIMEZONE="America/Chicago"         # timedatectl list-timezones | grep America
+KEYMAP="es"
+TIMEZONE="Europe/Berlin"         # timedatectl list-timezones | grep America
 
 # Disk — leave blank for interactive selection (recommended).
 # Pre-set to a specific device (e.g. /dev/nvme0n1) to skip the menu,
 # but you will still be asked to type the device name to confirm the wipe.
-DISK=""
+DISK="/dev/nvme0n1"
 
 # Swap — 16 GB swapfile to complement 8 GB RAM for gaming headroom
 SWAP_SIZE="16G"
@@ -213,20 +213,20 @@ read -rp "$(echo -e "${RED}${BOLD}To confirm, type the full device name '${DISK}
 # and standard sata/usb (1/2). Any device name ending in a digit needs 'p'.
 if [[ "$DISK" =~ [0-9]$ ]]; then
     PART_EFI="${DISK}p1"
-    PART_ROOT="${DISK}p2"
+    PART_ROOT="${DISK}p3"
 else
     PART_EFI="${DISK}1"
     PART_ROOT="${DISK}2"
 fi
 
-info "Formatting partitions..."
+#-- info "Formatting partitions..."
 #---mkfs.fat  -F32 -n EFI  "$PART_EFI"
 #---mkfs.ext4 -L   ROOT    "$PART_ROOT"
 
 info "Mounting partitions..."
-mount "$PART_ROOT" /mnt
-mkdir -p /mnt/boot/efi
-mount "$PART_EFI"  /mnt/boot/efi
+mount /dev/nvme0n1p3 /mnt
+#-- mkdir -p /mnt/boot/efi
+mount /dev/nvme0n1p1 /mnt/boot
 
 ok "Partitions ready."
 
@@ -234,7 +234,7 @@ ok "Partitions ready."
 #  ░░  SWAP FILE — 16 GB to complement 8 GB RAM  ░░
 # =============================================================================
 
-banner "Creating 16 GB Swapfile"
+#-- banner "Creating 16 GB Swapfile"
 
 # fallocate is orders of magnitude faster than dd for this purpose
 #---fallocate -l "$SWAP_SIZE" /mnt/swapfile
@@ -251,8 +251,8 @@ ok "16 GB swapfile active."
 banner "Installing Base System (pacstrap)"
 
 # Sync mirrors and optimise for speed
-info "Updating mirrorlist..."
-reflector --country DE --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+#-- info "Updating mirrorlist..."
+#-- reflector --country DE --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 # Enable multilib for Steam/gaming lib32 packages right now so pacstrap can see it
 sed -i '/^#\[multilib\]/,/^#Include/{s/^#//}' /etc/pacman.conf
